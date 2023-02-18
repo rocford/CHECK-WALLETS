@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "d4c9542d-427d-4615-8412-5434a0b2f2aa",
+		"name": "Check Wallets v1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25707126"
+	},
+	"item": [
+		{
+			"name": "Есть ли в кошеле {{токен}} ?",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//pm.environment.set(\"wallet\", pm.iterationData.get(\"wallet\"))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"НАЛИЧИЕ ТОКЕНА\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"    pm.expect(jsonData.result).not.to.eql(\"0\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{main_url}}/api?module=account&action=tokenbalance&contractaddress={{contract_adress}}&address={{wallet}}&tag=latest&apikey={{api_key}}",
+					"host": [
+						"{{main_url}}"
+					],
+					"path": [
+						"api"
+					],
+					"query": [
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "tokenbalance"
+						},
+						{
+							"key": "contractaddress",
+							"value": "{{contract_adress}}"
+						},
+						{
+							"key": "address",
+							"value": "{{wallet}}"
+						},
+						{
+							"key": "tag",
+							"value": "latest"
+						},
+						{
+							"key": "apikey",
+							"value": "{{api_key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Есть ли в кошеле ЭФИР/МАТИК ?",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"НАЛИЧИЕ ETH/MATIC\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"    pm.expect(jsonData.result).not.to.eql(\"0\");\r",
+							"});\r",
+							"pm.test(\"БОЛЬШЕ 0.01 ETH\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"    pm.expect(Number(jsonData.result)).to.be.gte(Math.pow(10,16));\r",
+							"});\r",
+							"pm.test(\"БОЛЬШЕ 0.05 ETH\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"    pm.expect(Number(jsonData.result)).to.be.gte(5*Math.pow(10,16));\r",
+							"});\r",
+							"pm.test(\"БОЛЬШЕ 0.1 ETH\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"    pm.expect(Number(jsonData.result)).to.be.gte(Math.pow(10,17));\r",
+							"});\r",
+							"pm.test(\"БОЛЬШЕ 1 ETH\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"    pm.expect(Number(jsonData.result)).to.be.gte(Math.pow(10,18));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"wallet\", pm.iterationData.get(\"wallet\"))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{main_url}}/api?module=account&action=balance&address={{wallet}}&tag=latest&apikey={{api_key}}",
+					"host": [
+						"{{main_url}}"
+					],
+					"path": [
+						"api"
+					],
+					"query": [
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "balance"
+						},
+						{
+							"key": "address",
+							"value": "{{wallet}}"
+						},
+						{
+							"key": "tag",
+							"value": "latest"
+						},
+						{
+							"key": "apikey",
+							"value": "{{api_key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Были ли ERC-721 (NFT) транзакции?",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Есть транзакции\", function() {\r",
+							"    pm.expect(jsonData.message).not.to.eql(\"No transactions found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"wallet\", pm.iterationData.get(\"wallet\"))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{main_url}}/api?module=account&action=tokennfttx&address={{wallet}}&page=1&offset=100&startblock=0&sort=asc&apikey={{api_key}}",
+					"host": [
+						"{{main_url}}"
+					],
+					"path": [
+						"api"
+					],
+					"query": [
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "tokennfttx"
+						},
+						{
+							"key": "contractaddress",
+							"value": "0x06012c8cf97bead5deae237070f9587f8e7a266d",
+							"description": "ПО УМОЛЧАНИЮ ВЫКЛ\nтут можно добавить адрес конкретной нфт",
+							"disabled": true
+						},
+						{
+							"key": "address",
+							"value": "{{wallet}}"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "offset",
+							"value": "100"
+						},
+						{
+							"key": "startblock",
+							"value": "0",
+							"description": "тут можно будет проверить с определенного блока, шоб старье не показывало"
+						},
+						{
+							"key": "endblock",
+							"value": "27025780",
+							"description": "ВЫКЛ",
+							"disabled": true
+						},
+						{
+							"key": "sort",
+							"value": "asc"
+						},
+						{
+							"key": "apikey",
+							"value": "{{api_key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Были ли ERC1155 (NFT) транзы ?",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Есть транзакции\", function() {\r",
+							"    pm.expect(jsonData.message).not.to.eql(\"No transactions found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"wallet\", pm.iterationData.get(\"wallet\"))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{main_url}}/api?module=account&action=token1155tx&address={{wallet}}&page=1&offset=100&startblock=0&sort=asc&apikey={{api_key}}",
+					"host": [
+						"{{main_url}}"
+					],
+					"path": [
+						"api"
+					],
+					"query": [
+						{
+							"key": "module",
+							"value": "account"
+						},
+						{
+							"key": "action",
+							"value": "token1155tx"
+						},
+						{
+							"key": "contractaddress",
+							"value": "0x76be3b62873462d2142405439777e971754e8e77",
+							"disabled": true
+						},
+						{
+							"key": "address",
+							"value": "{{wallet}}"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "offset",
+							"value": "100"
+						},
+						{
+							"key": "startblock",
+							"value": "0"
+						},
+						{
+							"key": "endblock",
+							"value": "99999999",
+							"description": "ВЫКЛ",
+							"disabled": true
+						},
+						{
+							"key": "sort",
+							"value": "asc"
+						},
+						{
+							"key": "apikey",
+							"value": "{{api_key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

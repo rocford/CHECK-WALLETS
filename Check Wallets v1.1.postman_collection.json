@@ -13,7 +13,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"//pm.environment.set(\"wallet\", pm.iterationData.get(\"wallet\"))"
+							"pm.environment.set(\"wallet\", pm.iterationData.get(\"wallet\"))"
 						],
 						"type": "text/javascript"
 					}
@@ -24,8 +24,11 @@
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
 							"\r",
-							"pm.test(\"НАЛИЧИЕ ТОКЕНА\", function() {\r",
+							"pm.test(\"СТАТУС ПРОВЕРКИ ОК\", function() {\r",
 							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"НАЛИЧИЕ ТОКЕНА\", function() {\r",
 							"    pm.expect(jsonData.result).not.to.eql(\"0\");\r",
 							"});"
 						],
@@ -83,24 +86,23 @@
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
 							"\r",
-							"pm.test(\"НАЛИЧИЕ ETH/MATIC\", function() {\r",
+							"pm.test(\"СТАТУС ПРОВЕРКИ ОК\", function() {\r",
 							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"НАЛИЧИЕ ETH/MATIC\", function() {\r",
 							"    pm.expect(jsonData.result).not.to.eql(\"0\");\r",
 							"});\r",
 							"pm.test(\"БОЛЬШЕ 0.01 ETH\", function() {\r",
-							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
 							"    pm.expect(Number(jsonData.result)).to.be.gte(Math.pow(10,16));\r",
 							"});\r",
 							"pm.test(\"БОЛЬШЕ 0.05 ETH\", function() {\r",
-							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
 							"    pm.expect(Number(jsonData.result)).to.be.gte(5*Math.pow(10,16));\r",
 							"});\r",
 							"pm.test(\"БОЛЬШЕ 0.1 ETH\", function() {\r",
-							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
 							"    pm.expect(Number(jsonData.result)).to.be.gte(Math.pow(10,17));\r",
 							"});\r",
 							"pm.test(\"БОЛЬШЕ 1 ETH\", function() {\r",
-							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
 							"    pm.expect(Number(jsonData.result)).to.be.gte(Math.pow(10,18));\r",
 							"});"
 						],
@@ -162,6 +164,10 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"СТАТУС ПРОВЕРКИ ОК\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"});\r",
 							"\r",
 							"pm.test(\"Есть транзакции\", function() {\r",
 							"    pm.expect(jsonData.message).not.to.eql(\"No transactions found\");\r",
@@ -250,6 +256,10 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"СТАТУС ПРОВЕРКИ ОК\", function() {\r",
+							"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+							"});\r",
 							"\r",
 							"pm.test(\"Есть транзакции\", function() {\r",
 							"    pm.expect(jsonData.message).not.to.eql(\"No transactions found\");\r",
